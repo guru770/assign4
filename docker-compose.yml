@@ -1,0 +1,31 @@
+version: '3.3'
+
+services:
+    db:
+      image: bank-application:latest
+      container_name: bankproducer-db  
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=bank
+      ports:
+        - "3306:3306"
+      restart: always
+      
+ 
+
+    ProducerBank:                       
+      image: bank-producer               
+      container_name: bank-producer-app  
+      build:
+        context: .                          
+        dockerfile: Dockerfile            
+      ports:
+        - "8091:8091"                       
+      restart: always
+        
+      depends_on:                          
+        - db                                
+      environment:
+        SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/bank
+        SPRING_DATASOURCE_USERNAME: root
+        SPRING_DATASOURCE_PASSWORD: root
